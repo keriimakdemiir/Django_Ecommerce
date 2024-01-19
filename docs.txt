@@ -1,0 +1,147 @@
+
+1. pip install django
+2. django-admin startproject ecommerce
+3. python manage.py runserver
+4. django-admin startapp store
+5. ecommerce => ecommerce => settings => Installed_Apps listesine 'store' ekle
+6. ecommerce => store => models.py üzerinde veri tabanının yansıması yaratılır.
+7. python manage.py makemigrations
+8. python manage.py migrate
+9. ecommerce => static adında bir klasör açıyoruz.
+10. ecommerce => static => css adında bir klasör açıyoruz.
+11. ecommerce => static => js adında bir klasör açıyoruz.
+12. ecommerce => static => media adında bir klasör açıyoruz.
+13. ecommerce => ecommerce => settings.py dosyasına aşağıda ki kodları ekleyin.
+
+    STATIC_URL = '/static/'  # bu kod zaten var başına '/' koy sadece
+
+    STATICFILES_DIRS = [BASE_DIR / 'static']
+
+    MEDIA_URL = '/media/'
+
+    MEDIA_ROOT = BASE_DIR / 'static/media'
+14. ecommerce => ecommerce => urls.py dosyasına aşağıdaki kodları ekleyin
+
+    from django.conf.urls.static import static
+    from django.conf import settings
+
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)
+
+15. ecommerce => store => admin.py dosyasına aşağıdaki kodları yazın
+
+    from .models import Category, Product
+
+
+    class CategoryAdmin(admin.ModelAdmin):
+        # name üzerinden slug üretmek için.
+        prepopulated_fields = {
+            'slug': ('name', )
+        }
+        fields = ['name', 'slug']  # admin category eklerken hangi alanları görebilecek. status, ip_address, machine_name, create_date vb bilgilere müdahele etmesini istemiyorsak onları buraya yazmıyoruz.
+
+
+    class ProductAdmin(admin.ModelAdmin):
+        prepopulated_fields = {
+            'slug': ('title',)
+        }
+        fields = ['title', 'slug', 'description', 'price', 'image', 'category']
+
+
+    admin.site.register(Category, CategoryAdmin)
+    admin.site.register(Product, ProductAdmin)
+
+16. python manage.py createsuperuser
+17. admin paneli üzerinden 2 category, bu categorilere ait 2 şer tane ürün ekleyin
+18. ecommerce => store => urls.py dosyası yaratın
+19. ecommerce => store => views.py aşağıda ki kodu ekleyin
+
+    def store(request):
+        all_products = Product.objects.all()
+
+        data = {
+            'all_products': all_products
+        }
+
+        return render(request,
+                      template_name='store/store.html',
+                      context=data)
+
+20. ecommerce => store => templates klasörü açın.
+21. ecommerce => store => templates => store klasörü açın.
+22. ecommerce => store => templates => store => base.html dosyası açın.
+23. ecommerce => store => templates => partial klasörü açılır.
+24. ecommerce => store => templates => partial => _navbar.html açılır.
+25. ecommerce => store => templates => store => store.html dosyası açılır.
+
+26. store => views.py içerisine aşağıdaki fonksiyonu ekleyin
+    def categories(request):
+    all_categories = Category.objects.all()
+
+    return {
+        'all_categories': all_categories
+    }
+27. ecommerce => settings.py => TEMPLATES listesine aşağıdaki kodu ekleyelim
+    TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+                'store.views.categories',  # bu satır eklenir
+            ],
+        },
+    },
+]
+
+28. store => views.py =>  product_info() fonksiyonu yazılır.
+29. store => urls.py altına aşağıdaki url girilir.
+    # Product Detail
+    path('product/<slug:product_slug>/', views.product_info, name='product-info')
+30. store => template => store => product-info.html açılır.
+
+31. create a new app
+    31.1. python manage.py startapp account
+    32.2. ecommerce => settings.py => INSTALLED_APPS listesine 'account' eklenir.
+
+32. account => forms.py dosyası eklenir.
+33. account => forms.py altında Register, Login, Update profile formları yaratılır.
+34. account => views.py => register() fonksiyonu yazılır.
+35. account => urls.py dosyası yaratılır.
+36. ecommerce => urls.py => account.url.py dosyası register edilir.
+37. account => urls.py => path('register', views.register, name='register') eklenir.
+38. account => template klasörü açılr.
+39. account => template => account klasörü açılır.
+40. account => template => account => register.html açılır.
+41. account=> views => my_login fonksiyonu yazılır.
+42. account => urls => login path yazılır.
+43. account => templates => account => my-login.html eklenir.
+44. account => views => dashboard fonksiyonu yazılır.
+45. account => urls => dashboard path yazılır.
+46. account => templates => account => dashboard.html eklenir.
+47. account => views => dashboard fonksiyonuna "login-required" decoratörü eklenir
+48. account => views => user-logout fonksiyonu yazılır.
+49. account => urls => user-logout path eklenir.
+50. account => templates => account => user-logout.html eklenir.
+51. account => views => profile_management fonksiyonu yazılır
+52. account => urls => profile_management path eklenir.
+53. account => templates => account => profile-management.html eklenir.
+54. account => views => delete_account fonksiyonu yazılır
+55. account => urls => delete_account path eklenir.
+56. account => templates => account => delete_account.html eklenir.
+57. cart app eklenir
+58. ecommerce => settings => INSTALLED_APPS listesine "cart" app eklenir.
+59. cart => cart.py dosyası eklenir.
+60. cart => context_processors.py dosyası eklenir
+61. ecommerce => settings => TEMPLATES listesine 'cart.context_processors.cart' eklenir
+62. cart => views => cart_add(), cart_summary(), cart_update(), cart_delete() fonksiyonları yazılır.
+63. cart => urls.py dosyası yaratılır.
+64. cart => urls => urlpatterns listesi yaratılarak path() foksiyonları yazılır.
+65. ecommerce => urls => cart.urls include edilir.
+
+http://127.0.0.1:8000/account/dashboard

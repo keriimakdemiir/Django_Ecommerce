@@ -1,0 +1,40 @@
+
+{% extends './base.html' %}
+
+{% load static %}
+
+{% block title %}
+    Store
+{% endblock %}
+
+{% block content %}
+<div class="row row-cols-1 row-cols-md-3 g-4 mt-2">
+   <div class="col-sm-4">
+       <img src="{{ product.image.url }}" class="img-fluid mx-auto d-block">
+   </div>
+   <div class="col-sm-8">
+       <div class="card">
+           <div class="card-body">
+               <p class="card-text"><strong>Title: </strong>{{ product.title }}</p>
+               <p class="card-text"><strong>Description: </strong>{{ product.description }}</p>
+               <p class="card-text"><strong>Brand: </strong>{{ product.brand }}</p>
+               <p class="card-text"><strong>Price: </strong>{{ product.price }}</p>
+               <p class="card-text">
+                   <strong>Quantity: </strong>
+                   <select id="select">
+                       <option value="1">1</option>
+                       <option value="2">2</option>
+                       <option value="3">3</option>
+                       <option value="4">4</option>
+                   </select>
+               </p>
+           </div>
+           <div class="card-footer">
+               <button type="button" id="add_button" value="{{ product.id }}" class="btn btn-outline-success btn-sm float-end">
+                   <i class="fa fa-shopping-basket" aria-hidden="true"></i> &nbsp; Add to cart
+               </button>
+           </div>
+       </div>
+   </div>
+</div>
+{% endblock %}

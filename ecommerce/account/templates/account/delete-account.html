@@ -1,0 +1,31 @@
+
+
+{% extends 'store/base.html' %}
+
+{% load static %}
+
+{% block title %}
+    Delete Account
+{% endblock %}
+
+{% block content %}
+<div class="row mt-2">
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">Delete Account</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-danger">
+                    <i class="fa fa-trash" aria-hidden="true">&nbsp; Delete my account</i>
+                </button>
+            </form>
+            <br><hr><br>
+            <a href="{% url 'profile-management' %}" class="btn btn-sm btn-success">
+                <i class="fa fa-arrow-left" aria-hidden="true"> &nbsp; Go back</i>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
